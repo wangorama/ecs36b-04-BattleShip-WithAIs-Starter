@@ -47,9 +47,9 @@ namespace BattleShip {
 
         //player actions
 
-        void place_ships(std::istream& in, std::ostream& out);
+        virtual void place_ships(std::istream& in, std::ostream& out);
 
-        std::pair<int, int> get_firing_location(std::istream& in, std::ostream& out);
+        virtual std::pair<int, int> get_firing_location(std::istream& in, std::ostream& out)=0;
 
         FiringResult receive_fire_at(int row, int col);
 

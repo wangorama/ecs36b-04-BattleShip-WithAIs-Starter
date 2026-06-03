@@ -32,7 +32,6 @@ namespace BattleShip {
         void mark_as_fired_at();
 
     private:
-
         std::optional<char> ship_;
         bool has_been_fired_at_;
 

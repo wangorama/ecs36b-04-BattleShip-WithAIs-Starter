@@ -6,6 +6,9 @@
 
 #include <algorithm>
 
+#include "HumanPlayer.h"
+#include "AIPlayer.h"
+
 namespace BattleShip {
     /**
      * Create a game based on the game configuration
@@ -13,16 +16,36 @@ namespace BattleShip {
      * @param in : the stream to get input from
      * @param out : the stream to display output to
      */
-    Game::Game(const GameConfig& game_config, std::istream& in, std::ostream& out) : players_(), cur_player_index_(0),
-        in_(in), out_(out) {
-        const int num_players = 2;
-        for (int i = 0; i < num_players; ++i) {
-            players_.push_back(std::make_unique<Player>(game_config, in, out, players_));
-            players_.at(i)->place_ships(in_, out_);
+
+    void Game::gameSelect(std::istream& in, std::ostream& out) {
+        //this makes the selection
+        int choice = 0;
+        out<< "" <<std::endl;
+        out<< "" <<std::endl;
+        out<< "" <<std::endl;
+        out<< "" <<std::endl;
+        std::getline(in, );
         }
 
-        for (int i = 0; i < num_players; ++i) {
-            players_.at(i)->set_opponent(*players_.at((i + 1) % players_.size()));
+    Game::Game(const GameConfig& game_config, std::istream& in, std::ostream& out) : players_(), cur_player_index_(0),
+        in_(in), out_(out) {
+        int choice = Game::gameSelect();
+        if (int choice == 1) {
+            const int num_players = 2;
+            for (int i = 0; i < num_players; ++i) {
+                players_.push_back(std::make_unique<HumanPlayer>(game_config, in, out, players_));
+                players_.at(i)->place_ships(in_, out_);
+            }
+
+            for (int i = 0; i < num_players; ++i) {
+                players_.at(i)->set_opponent(*players_.at((i + 1) % players_.size()));
+            }
+        }
+        else if (int choice = 2) {
+            //human vs ai
+        }
+        else if (int choice = 3) {
+            //ai vs ai
         }
     }
 
