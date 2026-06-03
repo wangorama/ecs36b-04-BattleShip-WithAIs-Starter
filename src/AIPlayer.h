@@ -7,19 +7,22 @@
 #include <iosfwd>
 #include <random>
 #include <utility>
+#include <vector>
 
 #include "Player.h"
 
 
 namespace BattleShip {
     class AIPlayer: public Player {
-        static std::mt19937 rng;
+        static void seed(unsigned int seed);
 
         void place_ships(std::istream &in, std::ostream &out) override;
 
-        std::pair<int, int> get_firing_location(std::istream& in, std::ostream& out) override;
+        virtual std::pair<int, int> get_firing_location(std::istream& in, std::ostream& out) override = 0;
 
         virtual ~AIPlayer() = default;
+    private:
+        std::vector<std::pair<int, int>> Firing_Locations;
     };
 }
 

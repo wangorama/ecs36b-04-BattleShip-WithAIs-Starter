@@ -5,6 +5,7 @@
 #include "Game.h"
 
 #include <algorithm>
+#include <format>
 
 #include "HumanPlayer.h"
 #include "AIPlayer.h"
@@ -17,20 +18,21 @@ namespace BattleShip {
      * @param out : the stream to display output to
      */
 
-    void Game::gameSelect(std::istream& in, std::ostream& out) {
+    int Game::gameSelect(std::istream& in, std::ostream& out) {
         //this makes the selection
         int choice = 0;
         out<< "" <<std::endl;
         out<< "" <<std::endl;
         out<< "" <<std::endl;
         out<< "" <<std::endl;
-        std::getline(in, );
+        in >> choice;
+        return choice;
         }
 
     Game::Game(const GameConfig& game_config, std::istream& in, std::ostream& out) : players_(), cur_player_index_(0),
         in_(in), out_(out) {
-        int choice = Game::gameSelect();
-        if (int choice == 1) {
+        int choice = gameSelect(in, out);
+        if (choice == 1) {
             const int num_players = 2;
             for (int i = 0; i < num_players; ++i) {
                 players_.push_back(std::make_unique<HumanPlayer>(game_config, in, out, players_));
@@ -41,11 +43,22 @@ namespace BattleShip {
                 players_.at(i)->set_opponent(*players_.at((i + 1) % players_.size()));
             }
         }
-        else if (int choice = 2) {
+        else if (choice == 2) {
             //human vs ai
+            players_.push_back(std::make_unique<HumanPlayer>(game_config, in, out, players_));
+            players_.at(0)->place_ships(in_, out_);
+
+            players_.push_back(std::make_unique<AIPlayer>(game_config, in, out, players_));
+            players_.at(1)->place_ships(in_, out_);
+
         }
-        else if (int choice = 3) {
+        else if (choice == 3) {
             //ai vs ai
+            const int num_players = 2;
+            for (int i = 0; i < num_players; ++i) {
+                players_.push_back(std::make_unique<AIPlayer>(game_config, in, out, players_));
+                players_.at(i)->place_ships(in_, out_);
+            }
         }
     }
 

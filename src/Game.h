@@ -19,7 +19,7 @@ namespace BattleShip {
      */
     class Game {
     public:
-        void gameSelect(std::istream& in, std::ostream& out);
+        int gameSelect(std::istream& in, std::ostream& out);
 
         explicit Game(const GameConfig& game_config, std::istream& in, std::ostream& out);
 

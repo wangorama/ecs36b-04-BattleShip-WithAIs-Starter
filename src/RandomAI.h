@@ -10,6 +10,9 @@ namespace BattleShip {
     class RandomAI: public AIPlayer {
         //randomly generates the move and go blind
 
+    public:
+        virtual std::pair<int, int> get_firing_location(std::istream& in, std::ostream& out) override; //the random generator of it
+
 
 
     };
