@@ -12,17 +12,22 @@
 #include "Player.h"
 
 
-namespace BattleShip {
-    class AIPlayer: public Player {
-        static void seed(unsigned int seed);
+namespace BattleShip { 
+    class AIPlayer : public Player {
+    public:
 
-        void place_ships(std::istream &in, std::ostream &out) override;
+        // no keyboard input needed, just a name and game config
+        AIPlayer(const std::string& name, const GameConfig& game_config);
 
-        virtual std::pair<int, int> get_firing_location(std::istream& in, std::ostream& out) override = 0;
+        void place_ships(std::istream& in, std::ostream& out) override;
 
-        virtual ~AIPlayer() = default;
-    private:
-        std::vector<std::pair<int, int>> Firing_Locations;
+        static void seed_rng(unsigned int seed) { rng_.seed(seed); }
+
+        // pure virtual since each AI shoots differently
+        std::pair<int,int> get_firing_location(std::istream& in, std::ostream& out) override = 0;
+
+    protected:
+        static std::mt19937 rng_; // one generator shared by all AIs
     };
 }
 

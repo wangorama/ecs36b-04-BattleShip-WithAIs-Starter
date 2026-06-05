@@ -1,15 +1,23 @@
 #include <fstream>
 #include <iostream>
-#include <print>
+#include <random>
+#include <ctime>
 
+#include "AIPlayer.h"
 #include "GameConfig.h"
 #include "Game.h"
 #include "Player.h"
 
+
 int main(int argc, char** argv) {
-    if (argc != 2) {
-        std::println("Usage ./BattleShipExe PathToConfigFile");
+    unsigned int seed;
+    if (argc > 2) {
+        seed = std::stoul(argv[2]);
+    } else {
+        seed = time(nullptr);
     }
+    BattleShip::AIPlayer::rng_.seed(seed);
+
     std::ifstream config_file(argv[1]);
     // BattleShip::GameConfig game_config(config_file);
     BattleShip::GameConfig game_config(7, 7,

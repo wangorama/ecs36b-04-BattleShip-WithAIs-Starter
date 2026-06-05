@@ -110,7 +110,7 @@ namespace BattleShip {
      * @param out : the stream to display output to
      * @return : a valid location to shoot out in the form row, col
      */
-    virtual std::pair<int, int> Player::get_firing_location(std::istream& in, std::ostream& out) {
+    std::pair<int, int> Player::get_firing_location(std::istream& in, std::ostream& out) {
         const std::string prompt = std::format(
             "{}, where would you like to fire?\n"
             "Enter your attack coordinate in the form row col:",

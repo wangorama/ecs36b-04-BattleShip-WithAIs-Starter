@@ -21,6 +21,8 @@ namespace BattleShip {
     public:
         int gameSelect(std::istream& in, std::ostream& out);
 
+        int aiSelect(std::istream& in, std::ostream& out);
+
         explicit Game(const GameConfig& game_config, std::istream& in, std::ostream& out);
 
         //playing the game

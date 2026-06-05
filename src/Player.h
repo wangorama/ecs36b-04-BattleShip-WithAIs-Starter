@@ -49,7 +49,7 @@ namespace BattleShip {
 
         virtual void place_ships(std::istream& in, std::ostream& out);
 
-        virtual std::pair<int, int> get_firing_location(std::istream& in, std::ostream& out)=0;
+        virtual std::pair<int, int> get_firing_location(std::istream& in, std::ostream& out);
 
         FiringResult receive_fire_at(int row, int col);
 
@@ -57,11 +57,13 @@ namespace BattleShip {
 
         [[nodiscard]] bool are_all_ships_destroyed() const;
 
+        virtual void notify_hit(int row, int col);
+
     private:
 
         //placing ships
 
-        void place_ship(char ship_name, int ship_length, std::istream& in = std::cin, std::ostream& out = std::cout);
+        virtual void place_ship(char ship_name, int ship_length, std::istream& in = std::cin, std::ostream& out = std::cout);
 
         [[nodiscard]] std::optional<Orientation> get_orientation(char ship_name, std::istream& in,
                                                                  std::ostream& out) const;

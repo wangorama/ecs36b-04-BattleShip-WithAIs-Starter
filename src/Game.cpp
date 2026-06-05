@@ -9,6 +9,9 @@
 
 #include "HumanPlayer.h"
 #include "AIPlayer.h"
+#include "CheatingAI.h"
+#include "RandomAI.h"
+#include "SearchAndDestroyAI.h"
 
 namespace BattleShip {
     /**
@@ -21,13 +24,24 @@ namespace BattleShip {
     int Game::gameSelect(std::istream& in, std::ostream& out) {
         //this makes the selection
         int choice = 0;
-        out<< "" <<std::endl;
-        out<< "" <<std::endl;
-        out<< "" <<std::endl;
-        out<< "" <<std::endl;
+        out << "What type of game do you want to play?\n";
+        out << "1. Human vs Human\n";
+        out << "2. Human vs AI\n";
+        out << "3. AI vs AI\n";
         in >> choice;
         return choice;
         }
+
+    int Game::aiSelect(std::istream& in, std::ostream& out) {
+        int choice = 0;
+        out<<"What AI do you want?\n";
+        out << "1. Cheating AI\n";
+        out << "2. Random AI\n";
+        out << "3. Search and Destroy AI\n";
+        in >> choice;
+        return choice;}
+
+
 
     Game::Game(const GameConfig& game_config, std::istream& in, std::ostream& out) : players_(), cur_player_index_(0),
         in_(in), out_(out) {
@@ -48,17 +62,39 @@ namespace BattleShip {
             players_.push_back(std::make_unique<HumanPlayer>(game_config, in, out, players_));
             players_.at(0)->place_ships(in_, out_);
 
-            players_.push_back(std::make_unique<AIPlayer>(game_config, in, out, players_));
+            //push ai to the list of players
+            int ai_choice = aiSelect(in, out);
+            if (ai_choice == 1) {
+                players_.push_back(std::make_unique<CheatingAI>("AI", game_config));
+            } else if (ai_choice == 2) {
+                players_.push_back(std::make_unique<RandomAI>("AI", game_config));
+            } else if (ai_choice == 3) {
+                players_.push_back(std::make_unique<SearchAndDestroyAI>("AI", game_config));
+            }
             players_.at(1)->place_ships(in_, out_);
+
+            players_.at(0)->set_opponent(*players_.at(1));
+            players_.at(1)->set_opponent(*players_.at(0));
 
         }
         else if (choice == 3) {
             //ai vs ai
             const int num_players = 2;
             for (int i = 0; i < num_players; ++i) {
-                players_.push_back(std::make_unique<AIPlayer>(game_config, in, out, players_));
-                players_.at(i)->place_ships(in_, out_);
+                int ai_choice = aiSelect(in, out);
+                if (ai_choice == 1) {
+                    players_.push_back(std::make_unique<CheatingAI>(std::format("AI {}", i+1), game_config));
+                } else if (ai_choice == 2) {
+                    players_.push_back(std::make_unique<RandomAI>(std::format("AI {}", i+1), game_config));
+                } else if (ai_choice == 3) {
+                    players_.push_back(std::make_unique<SearchAndDestroyAI>(std::format("AI {}", i+1), game_config));
+                }
+
             }
+            players_.at(0)->place_ships(in_, out_);
+            players_.at(1)->place_ships(in_, out_);
+            players_.at(0)->set_opponent(*players_.at(1));
+            players_.at(1)->set_opponent(*players_.at(0));
         }
     }
 
@@ -103,6 +139,7 @@ namespace BattleShip {
 
 
         if (firing_result.is_hit()) {
+            cur_player().notify_hit(row, col);
             out_ << std::format("{} hit {}'s {}!\n",
                                 cur_player().name(),
                                 cur_player().opponent().name(), firing_result.get_ship_hit().value()) << std::endl;
